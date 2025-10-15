@@ -89,6 +89,7 @@
         flex-direction: column;
         gap: 15px;
         width: 100%;
+        margin-bottom: 25px; /* espaçamento maior entre inputs e botão */
     }
     input {
         width: 100%;
@@ -114,6 +115,7 @@
         cursor: pointer;
         font-size: 15px;
         transition: 0.3s;
+        margin-top: 10px;
     }
     button:hover {
         background: var(--primary-dark);
@@ -286,13 +288,14 @@
   </div>
 </div>
 
-<!-- ========== FIREBASE SCRIPT ========== -->
+<!-- ====================== FIREBASE SCRIPT ====================== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import {
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    deleteUser,
     signOut
   } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
   import {
@@ -413,7 +416,7 @@
         <td>${user.email}</td>
         <td>${
           user.email !== "zshowerpvp1@gmail.com"
-            ? `<button class='delete-btn' data-uid='${docSnap.id}'>Excluir</button>`
+            ? `<button class='delete-btn' data-uid='${docSnap.id}' data-email='${user.email}'>Excluir</button>`
             : `<em>Administrador</em>`
         }</td>`;
       tbody.appendChild(tr);
@@ -421,7 +424,8 @@
 
     document.querySelectorAll(".delete-btn").forEach(btn => {
       btn.addEventListener("click", async () => {
-        await deleteDoc(doc(db, "users", btn.dataset.uid));
+        const uid = btn.dataset.uid;
+        await deleteDoc(doc(db, "users", uid));
         renderUserList();
       });
     });
