@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login e Cadastro</title>
+<style>
+    body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: radial-gradient(circle at top left, #0a0f1a, #0d1117);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+    }
+
+    .logo-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .logo {
+        width: 280px;
+        height: auto;
+        filter: drop-shadow(0 0 6px #1e40af);
+    }
+
+    .logo-title {
+        margin-top: 20px;
+        font-size: 22px;
+        font-weight: 600;
+        color: #60a5fa;
+        letter-spacing: 1px;
+        text-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+    }
+
+    .card {
+        background: #111827;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        width: 380px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* ======= ABAS SUPERIORES ======= */
+    .tabs {
+        display: flex;
+        border-radius: 15px 15px 0 0;
+        overflow: hidden;
+        margin-bottom: 20px;
+        margin-top: 10px;
+    }
+
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
+        cursor: pointer;
+        background: #1e293b;
+        border: none;
+        color: white;
+        font-weight: bold;
+        transition: background 0.3s;
+    }
+
+    .tab.active {
+        background: #2563eb;
+    }
+
+    /* ======= FORMULÁRIOS ======= */
+    .form-content {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        background: #1f2937;
+        color: white;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        background: #243046;
+        outline: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 15px;
+        transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+        background: #1e40af;
+        transform: scale(1.03);
+    }
+
+    .form-content button {
+        margin-top: 10px; /* adiciona espaço abaixo do botão Entrar */
+    }
+
+    .error {
+        color: #f87171;
+        text-align: center;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    /* ======= MENU PRINCIPAL ======= */
+    #menu {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #dashboard-logo {
+        width: 220px;
+        margin-bottom: 25px;
+        filter: drop-shadow(0 0 6px #1e3a8a);
+    }
+
+    .button-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .button-group button {
+        background-color: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 22px;
+        width: 240px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.3s;
+    }
+
+    .button-group button:hover {
+        background-color: #1e40af;
+        transform: scale(1.05);
+    }
+
+    /* ======= ADMIN SECTION ======= */
+    #adminSection {
+        display: none;
+        text-align: center;
+        background: #111827;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        width: 420px;
+        margin-top: 30px;
+    }
+
+    #userList {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #userList th, #userList td {
+        padding: 8px;
+        border-bottom: 1px solid #2d3748;
+    }
+
+    #userList th {
+        color: #60a5fa;
+    }
+
+    .delete-btn {
+        background: #dc2626;
+        border: none;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .delete-btn:hover {
+        background: #b91c1c;
+    }
+</style>
+</head>
+<body>
+<div class="container" id="login-container">
+    
+    <div class="logo-section">
+        <img class="logo" src="Logo.png" alt="Logo">
+        <h2 class="logo-title">Simulado ResumoInteligente</h2>
+    </div>
+
+    <div class="card">
+        <div class="tabs">
+            <button id="loginTab" class="tab active" onclick="showLogin()">Login</button>
+            <button id="registerTab" class="tab" onclick="showRegister()">Criar Conta</button>
+        </div>
+
+        <div class="form-content">
+            <div id="login-form">
+                <div class="input-group">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Senha" required>
+                </div>
+                <button onclick="login()">Entrar</button>
+                <p id="login-error" class="error"></p>
+            </div>
+
+            <div id="register-form" style="display: none;">
+                <div class="input-group">
+                    <input type="text" id="register-name" placeholder="Nome" required>
+                    <input type="email" id="register-email" placeholder="Email" required>
+                    <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" required>
+                </div>
+                <button onclick="register()">Criar Conta</button>
+                <p id="register-error" class="error"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="menu">
+    <img id="dashboard-logo" src="Logo.png" alt="Logo do Sistema">
+    <h2 id="welcome-text">Bem-vindo!</h2>
+    <p id="user-email-text"></p>
+
+    <div class="button-group">
+        <button id="accessSimulationBtn">Acessar Simulado</button>
+        <button id="logoutBtn" onclick="logout()">Sair</button>
+        <button id="adminPanel" onclick="toggleAdminPanel()" style="display: none;">Gerenciamento de Contas</button>
+    </div>
+
+    <div id="adminSection">
+        <h3>Gerenciamento de Contas</h3>
+        <table id="userList">
+            <thead>
+                <tr><th>Nome</th><th>Email</th><th>Ações</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const loginContainer = document.getElementById("login-container");
+    const menu = document.getElementById("menu");
+    const adminSection = document.getElementById("adminSection");
+
+    function showLogin() {
+        document.getElementById("login-form").style.display = "block";
+        document.getElementById("register-form").style.display = "none";
+        document.getElementById("loginTab").classList.add("active");
+        document.getElementById("registerTab").classList.remove("active");
+    }
+
+    function showRegister() {
+        document.getElementById("login-form").style.display = "none";
+        document.getElementById("register-form").style.display = "block";
+        document.getElementById("registerTab").classList.add("active");
+        document.getElementById("loginTab").classList.remove("active");
+    }
+
+    function register() {
+        const name = document.getElementById("register-name").value.trim();
+        const email = document.getElementById("register-email").value.trim();
+        const password = document.getElementById("register-password").value.trim();
+        const errorMsg = document.getElementById("register-error");
+
+        errorMsg.textContent = "";
+
+        if (!email.includes("@")) {
+            errorMsg.textContent = "Insira um e-mail válido.";
+            return;
+        }
+
+        if (password.length < 6) {
+            errorMsg.textContent = "A senha deve ter pelo menos 6 caracteres.";
+            return;
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        if (users.find(u => u.email === email)) {
+            errorMsg.textContent = "Este e-mail já está cadastrado.";
+            return;
+        }
+
+        users.push({ name, email, password });
+        localStorage.setItem("users", JSON.stringify(users));
+
+        showLogin();
+    }
+
+    function login() {
+        const email = document.getElementById("login-email").value.trim();
+        const password = document.getElementById("login-password").value.trim();
+        const errorMsg = document.getElementById("login-error");
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let user = users.find(u => u.email === email && u.password === password);
+
+        if (!user) {
+            errorMsg.textContent = "E-mail ou senha incorretos.";
+            return;
+        }
+
+        localStorage.setItem("loggedUser", JSON.stringify(user));
+        loginContainer.style.display = "none";
+        menu.style.display = "flex";
+        showMenu(user);
+    }
+
+    function showMenu(user) {
+        document.getElementById("welcome-text").textContent =
+            user.email === "zshowerpvp1@gmail.com"
+                ? "Bem-vindo, Administrador!"
+                : `Bem-vindo, ${user.name}!`;
+
+        document.getElementById("user-email-text").textContent = user.email;
+
+        if (user.email === "zshowerpvp1@gmail.com")
+            document.getElementById("adminPanel").style.display = "block";
+        else
+            document.getElementById("adminPanel").style.display = "none";
+    }
+
+    function toggleAdminPanel() {
+        if (adminSection.style.display === "none" || adminSection.style.display === "") {
+            adminSection.style.display = "block";
+            renderUserList();
+        } else {
+            adminSection.style.display = "none";
+        }
+    }
+
+    function renderUserList() {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const tbody = document.querySelector("#userList tbody");
+        tbody.innerHTML = "";
+
+        users.forEach((user, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.email !== "zshowerpvp1@gmail.com"
+                    ? `<button class='delete-btn' onclick='deleteUser(${index})'>Excluir</button>`
+                    : `<em>Administrador</em>`}
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function deleteUser(index) {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        users.splice(index, 1);
+        localStorage.setItem("users", JSON.stringify(users));
+        renderUserList();
+    }
+
+    function logout() {
+        localStorage.removeItem("loggedUser");
+        menu.style.display = "none";
+        loginContainer.style.display = "flex";
+    }
+
+    // Redireciona o botão "Acessar Simulado"
+    document.getElementById("accessSimulationBtn").addEventListener("click", function() {
+        window.location.href = "https://resumointeligente.github.io/quiz/"; // altere aqui para o link desejado
+    });
+
+    window.onload = function() {
+        const user = JSON.parse(localStorage.getItem("loggedUser"));
+        if (user) showMenu(user);
+    };
+</script>
+</body>
+</html>
