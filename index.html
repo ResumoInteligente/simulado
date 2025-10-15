@@ -12,6 +12,7 @@
         --card: #111827;
         --text-light: #60a5fa;
         --danger: #dc2626;
+        --success: #22c55e;
     }
     * { box-sizing: border-box; }
     body {
@@ -119,7 +120,13 @@
         transform: scale(1.03);
     }
     .error {
-        color: #f87171;
+        color: var(--danger);
+        text-align: center;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    .success {
+        color: var(--success);
         text-align: center;
         font-size: 14px;
         margin-top: 5px;
@@ -242,7 +249,7 @@
               <input type="email" id="login-email" placeholder="Email" required>
               <input type="password" id="login-password" placeholder="Senha" required>
           </div>
-          <button>Entrar</button>
+          <button id="loginBtn">Entrar</button>
           <p id="login-error" class="error"></p>
       </div>
 
@@ -252,8 +259,9 @@
               <input type="email" id="register-email" placeholder="Email" required>
               <input type="password" id="register-password" placeholder="Senha (mínimo 6 caracteres)" required>
           </div>
-          <button>Criar Conta</button>
+          <button id="registerBtn">Criar Conta</button>
           <p id="register-error" class="error"></p>
+          <p id="register-success" class="success"></p>
       </div>
   </div>
 </div>
@@ -300,7 +308,7 @@
     apiKey: "AIzaSyCOEKDHS1deKl13Mp9aU3NcM1JzT0pW7r8",
     authDomain: "painel-resumo-inteligente.firebaseapp.com",
     projectId: "painel-resumo-inteligente",
-    storageBucket: "painel-resumo-inteligente.firebasestorage.app",
+    storageBucket: "painel-resumo-inteligente.appspot.com",
     messagingSenderId: "949344025047",
     appId: "1:949344025047:web:5936b084ded1d70518b392"
   };
@@ -313,32 +321,25 @@
   const menu = document.getElementById("menu");
   const adminSection = document.getElementById("adminSection");
 
-  const loginBtn = document.querySelector("#login-form button");
-  const registerBtn = document.querySelector("#register-form button");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const loginTab = document.getElementById("loginTab");
-  const registerTab = document.getElementById("registerTab");
-  const adminPanelBtn = document.getElementById("adminPanel");
-
-  loginTab.addEventListener("click", showLogin);
-  registerTab.addEventListener("click", showRegister);
-  loginBtn.addEventListener("click", login);
-  registerBtn.addEventListener("click", register);
-  logoutBtn.addEventListener("click", logout);
-  adminPanelBtn.addEventListener("click", toggleAdminPanel);
+  document.getElementById("loginTab").addEventListener("click", showLogin);
+  document.getElementById("registerTab").addEventListener("click", showRegister);
+  document.getElementById("loginBtn").addEventListener("click", login);
+  document.getElementById("registerBtn").addEventListener("click", register);
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+  document.getElementById("adminPanel").addEventListener("click", toggleAdminPanel);
 
   function showLogin() {
     document.getElementById("login-form").style.display = "block";
     document.getElementById("register-form").style.display = "none";
-    loginTab.classList.add("active");
-    registerTab.classList.remove("active");
+    document.getElementById("loginTab").classList.add("active");
+    document.getElementById("registerTab").classList.remove("active");
   }
 
   function showRegister() {
     document.getElementById("login-form").style.display = "none";
     document.getElementById("register-form").style.display = "block";
-    registerTab.classList.add("active");
-    loginTab.classList.remove("active");
+    document.getElementById("registerTab").classList.add("active");
+    document.getElementById("loginTab").classList.remove("active");
   }
 
   async function register() {
@@ -346,13 +347,15 @@
     const email = document.getElementById("register-email").value.trim();
     const password = document.getElementById("register-password").value.trim();
     const errorMsg = document.getElementById("register-error");
+    const successMsg = document.getElementById("register-success");
     errorMsg.textContent = "";
+    successMsg.textContent = "";
 
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       await setDoc(doc(db, "users", userCred.user.uid), { name, email });
-      alert("Conta criada com sucesso!");
-      showLogin();
+      successMsg.textContent = "✅ Conta criada com sucesso!";
+      setTimeout(() => showLogin(), 1500);
     } catch (error) {
       errorMsg.textContent = error.message.includes("email")
         ? "E-mail já está em uso."
@@ -371,7 +374,7 @@
       loginContainer.style.display = "none";
       menu.style.display = "flex";
       showMenu(userCred.user);
-    } catch (error) {
+    } catch {
       errorMsg.textContent = "E-mail ou senha incorretos.";
     }
   }
